@@ -13,54 +13,29 @@
   <body>
     <div class="bg"></div>
 
-    <section class="arch-hero" id="hero">
-      <svg
-        class="arch-svg"
-        viewBox="0 0 800 940"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M400,35Q710,35 710,300V890H90V300Q90,35 400,35Z"
-          stroke="#fff"
-          stroke-width="3"
-          opacity=".5"
-        />
-        <path
-          d="M400,55Q690,55 690,300V870H110V300Q110,55 400,55Z"
-          stroke="#fff"
-          stroke-width="1.5"
-          opacity="0.83"
-        />
-      </svg>
-      <div class="invite-msg">You Are Invited to</div>
-      <div class="invite-name">Suresh Shrestha</div>
-      <div class="hero-image-wrap">
-        <img
-          class="hero-photo"
-          src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=650&q=80"
-          alt="Suresh"
-        />
-      </div>
-      <div class="arch-titlewrap">
-        <span class="arch-17">30<sup>th</sup></span>
-        <span class="arch-bday">Birthday</span>
-      </div>
-      <hr class="arch-hr" />
-      <button class="arch-open-btn" id="openInviteBtn" type="button">
-        <svg
-          class="envelope-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <rect x="3" y="6" width="18" height="12" rx="3" stroke-width="2" />
-          <path d="M3 6l9 7 9-7" stroke-width="2" />
-        </svg>
-        Open Invitation
-      </button>
-    </section>
+    <section class="arch-hero arch-hero-mobile" id="hero">
+  <svg class="arch-svg" viewBox="0 0 800 940" fill="none" aria-hidden="true">
+    <path d="M400,35Q710,35 710,300V890H90V300Q90,35 400,35Z" stroke="#fff" stroke-width="3" opacity=".5"/>
+    <path d="M400,55Q690,55 690,300V870H110V300Q110,55 400,55Z" stroke="#fff" stroke-width="1.5" opacity="0.83"/>
+  </svg>
+  <div class="invite-msg">You Are Invited to</div>
+  <div class="invite-name">Suresh Shrestha</div>
+  <div class="hero-image-wrap">
+    <img class="hero-photo" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=650&q=80" alt="Invitee Photo" />
+  </div>
+  <div class="arch-titlewrap" style="display: flex; gap: 8px; justify-content: center; align-items: baseline;">
+    <span class="arch-17">30<sup>th</sup></span>
+    <span class="arch-bday">Birthday</span>
+  </div>
+  <hr class="arch-hr" />
+  <button class="arch-open-btn arch-open-btn-mobile" id="openInviteBtn" type="button">
+    <svg class="envelope-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+      <rect x="3" y="6" width="18" height="12" rx="3" stroke-width="2"/>
+      <path d="M3 6l9 7 9-7" stroke-width="2"/>
+    </svg>
+    Open Invitation
+  </button>
+</section>
 
     <section class="party-card" id="party-section">
       <div class="party-title"><span>Birthday Party</span></div>
