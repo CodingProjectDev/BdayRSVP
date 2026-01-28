@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Suresh Shrestha 30th Birthday Invitation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+
+    <section class="arch-hero" id="hero">
+      <svg
+        class="arch-svg"
+        viewBox="0 0 800 940"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M400,35Q710,35 710,300V890H90V300Q90,35 400,35Z"
+          stroke="#fff"
+          stroke-width="3"
+          opacity=".5"
+        />
+        <path
+          d="M400,55Q690,55 690,300V870H110V300Q110,55 400,55Z"
+          stroke="#fff"
+          stroke-width="1.5"
+          opacity="0.83"
+        />
+      </svg>
+      <div class="invite-msg">You Are Invited to</div>
+      <div class="invite-name">Suresh Shrestha</div>
+      <div class="hero-image-wrap">
+        <img
+          class="hero-photo"
+          src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=650&q=80"
+          alt="Suresh"
+        />
+      </div>
+      <div class="arch-titlewrap">
+        <span class="arch-17">30<sup>th</sup></span>
+        <span class="arch-bday">Birthday</span>
+      </div>
+      <hr class="arch-hr" />
+      <button class="arch-open-btn" id="openInviteBtn" type="button">
+        <svg
+          class="envelope-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <rect x="3" y="6" width="18" height="12" rx="3" stroke-width="2" />
+          <path d="M3 6l9 7 9-7" stroke-width="2" />
+        </svg>
+        Open Invitation
+      </button>
+    </section>
+
+    <section class="party-card" id="party-section">
+      <div class="party-title"><span>Birthday Party</span></div>
+      <div class="carousel">
+        <button
+          class="carousel-arrow"
+          id="carouselPrev"
+          type="button"
+          aria-label="Previous photo"
+        >
+          ‹
+        </button>
+        <div class="carousel-track" id="carouselTrack">
+          <img
+            class="carousel-img"
+            alt="Party photo 1"
+            src="./assets/slide1.jpg"
+          />
+          <img
+            class="carousel-img"
+            alt="Party photo 2"
+            src="./assets/slide2.jpg"
+          />
+          <img
+            class="carousel-img"
+            alt="Party photo 3"
+            src="./assets/slide3.jpeg"
+          />
+        </div>
+        <button
+          class="carousel-arrow"
+          id="carouselNext"
+          type="button"
+          aria-label="Next photo"
+        >
+          ›
+        </button>
+      </div>
+      <div class="honor-block">
+        <div class="honoring">Honoring</div>
+        <div class="honor-name">Suresh Shrestha</div>
+        <div class="honor-sub">As He Turn 30th!</div>
+      </div>
+      <div class="rsvp-mini-card">
+        <div class="rsvp-title-block">
+          <hr />
+          <span class="rsvp-title">RSVP</span>
+          <hr />
+        </div>
+        <form id="rsvpForm" autocomplete="off">
+          <div class="row">
+            <label>Your Name</label>
+            <input
+              id="rsvpName"
+              type="text"
+              name="rsvp-name"
+              required
+              placeholder="Write your name here"
+            />
+          </div>
+          <div class="row">
+            <label>How many guests with you?</label>
+            <select id="rsvpGuests" name="rsvp-guests">
+              <option>One</option>
+              <option>Two</option>
+              <option>Three</option>
+              <option>Four</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Will you be there?</label>
+            <select id="rsvpAtt" name="rsvp-att">
+              <option>I'll definitely be there</option>
+              <option>I'm not sure yet</option>
+              <option>Sorry, I can't attend</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Your Wishes</label>
+            <textarea
+              id="rsvpWish"
+              name="rsvp-wish"
+              rows="2"
+              placeholder="Give words of blessing and prayer"
+            ></textarea>
+          </div>
+          <button class="rsvp-btn" type="submit">SEND RSVP</button>
+          <div
+            class="rsvp-success"
+            id="rsvpSuccess"
+            role="status"
+            aria-live="polite"
+          ></div>
+        </form>
+        <button class="ghost-btn" id="goEventBtn" type="button">
+          Click To View Party Event ↓
+        </button>
+      </div>
+    </section>
+
+    <section class="event-card" id="event-section">
+      <div class="event-badge">⏳ Countdown to the Big Day</div>
+      <div class="countdown" id="countdown" aria-label="Countdown">
+        <div><span id="cd-days">00</span><br /><span>Days</span></div>
+        <div><span id="cd-hours">00</span><br /><span>Hours</span></div>
+        <div><span id="cd-minutes">00</span><br /><span>Minutes</span></div>
+        <div><span id="cd-seconds">00</span><br /><span>Seconds</span></div>
+      </div>
+      <div class="event-title-block">
+        <hr />
+        <span class="event-title">Party Event</span>
+        <hr />
+      </div>
+      <div class="event-desc">“30 years of laughter, love, and happiness.”</div>
+      <div class="event-details">
+        <div class="detail date">
+          <b>12<sup>th</sup></b
+          ><br />Sunday, December
+        </div>
+        <div class="detail addr"><b>123</b><br />Lorem Ipsum Street, Bali</div>
+        <div class="detail time"><b>03:00</b><br />In The Afternoon</div>
+      </div>
+      <div class="map-wrap">
+        <iframe
+          class="event-map"
+          title="Location map"
+          src="https://maps.google.com/maps?q=Alila%20Villas%20Uluwatu&t=&z=13&ie=UTF8&iwloc=&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          frameborder="0"
+        ></iframe>
+      </div>
+      <div class="footer-thanks">
+        <div class="footer-desc">
+          It is a joy and honor if my friends are willing to attend and give
+          their best prayers.<br /><br />
+          Best Regards,<br />
+          <span class="footer-name">Suresh</span>
+        </div>
+        <div class="copyright">
+          Copyright 2026 • Coding Prooject Dev • All Rights Reserved
+        </div>
+      </div>
+    </section>
+
+    <audio id="bgMusic" loop preload="auto">
+      <source src="./assets/bgMusic.m4a" type="audio/mp4" />
+    </audio>
+    <div
+      id="musicControl"
+      class="music-control paused"
+      title="Play/Pause Music"
+      role="button"
+      aria-label="Play/Pause Music"
+      tabindex="0"
+    >
+      <svg
+        viewBox="0 0 36 36"
+        width="38"
+        height="38"
+        fill="none"
+        aria-hidden="true"
+      >
+        <circle
+          cx="18"
+          cy="18"
+          r="17"
+          stroke="#bc62b0"
+          stroke-width="2"
+          fill="#f4cbf3"
+        />
+        <path
+          d="M26 14V10a1 1 0 0 0-1.26-.97l-10 3A1 1 0 0 0 14 13v8.13a3 3 0 1 0 2 2.83V17.28l8-2.4V18.13a3 3 0 1 0 2 2.83V15a1 1 0 0 0-2 0v1.16l-8 2.4V13.89l8-2.4V14a1 1 0 0 0 2 0Z"
+          fill="#a02474"
+        />
+      </svg>
+    </div>
+
+    <!-- Firebase config and app scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+      firebase.initializeApp(window.firebaseConfig);
+      const db = firebase.firestore();
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

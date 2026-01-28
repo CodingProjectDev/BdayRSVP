@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard – RSVPs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+      firebase.initializeApp(window.firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
+    </script>
+    <style>
+      .admin-panel {
+        position: relative;
+        z-index: 1;
+        max-width: 660px;
+        margin: 2em auto;
+        background: #faf4ff;
+        border-radius: 17px;
+        box-shadow: 0 2px 16px #e774dd14;
+        padding: 2em;
+      }
+      .rsvp-row {
+        padding: 1em;
+        border-bottom: 1px solid #f3e3ef;
+      }
+      .rsvp-row:last-child {
+        border-bottom: none;
+      }
+      .rsvp-meta {
+        color: #9375af;
+        font-size: 0.97em;
+      }
+      .logout-btn {
+        float: right;
+      }
+      .admin-panel h2 {
+        margin-top: 0;
+      }
+      @media (max-width: 600px) {
+        .admin-panel {
+          padding: 1em;
+        }
+      }
+      @media (max-width: 700px) {
+        .rsvp-table {
+          min-width: 420px;
+        }
+        .rsvp-table-glass {
+          padding: 2vw 1vw;
+        }
+      }
+      @media (max-width: 500px) {
+        .admin-panel {
+          padding: 1em 0.2em;
+        }
+        .rsvp-table th,
+        .rsvp-table td {
+          font-size: 0.95em;
+        }
+        .admin-header {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .admin-header-actions {
+          gap: 7px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg"></div>
+    <div class="admin-root">
+      <div id="adminLogin" class="admin-login-panel">
+        <form id="loginForm">
+          <input
+            type="email"
+            id="adminEmail"
+            placeholder="Admin Email"
+            required
+          />
+          <input
+            type="password"
+            id="adminPass"
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+      <div id="adminDashboard" style="display: none">
+        <div class="admin-header">
+          <div class="admin-title">
+            <span class="dot-green"></span> Admin Dashboard
+          </div>
+          <div class="admin-header-actions">
+            <a href="index.html" class="btn-ghost"> 👈 RSVP Page</a>
+            <button id="exportPdf" class="btn-primary">Export PDF</button>
+            <button onclick="logout()" class="btn-primary logout-btn-header">
+              Logout
+            </button>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stats-card">
+            <div class="stat-label">Total RSVPs</div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-meta">All submissions</div>
+          </div>
+          <div class="stats-card">
+            <div class="stat-label">Guests Attending</div>
+            <div class="stat-value" id="statGuests">0</div>
+            <div class="stat-meta">Sum of guests (Yes)</div>
+          </div>
+          <div class="stats-card">
+            <div class="stat-label">Attending</div>
+            <div class="stat-value" id="statAttending">0</div>
+            <div class="stat-meta">Count of Yes</div>
+          </div>
+          <div class="stats-card">
+            <div class="stat-label">Not Attending</div>
+            <div class="stat-value" id="statNotAttending">0</div>
+            <div class="stat-meta">Count of No</div>
+          </div>
+          <div class="stats-card">
+            <div class="stat-label">Maybe</div>
+            <div class="stat-value" id="statMaybe">0</div>
+            <div class="stat-meta">Count of Maybe</div>
+          </div>
+        </div>
+        <div class="rsvp-table-glass">
+          <div class="rsvp-table-header">
+            <span><b>RSVP List</b></span>
+            <span id="tableMeta" class="rsvp-table-meta"></span>
+          </div>
+          <div class="rsvp-table-controls">
+            <input
+              type="text"
+              id="rsvpSearch"
+              placeholder="Search by name..."
+              class="rsvp-searchbox"
+            />
+            <button id="refreshBtn" class="btn-primary-light">Refresh</button>
+          </div>
+          <div style="overflow-x: auto">
+            <table class="rsvp-table" id="rsvpTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Guests</th>
+                  <th>Status</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Auth/UI switch
+      const adminLogin = document.getElementById("adminLogin");
+      const adminDashboard = document.getElementById("adminDashboard");
+      auth.onAuthStateChanged((user) => {
+        adminLogin.style.display = user ? "none" : "";
+        adminDashboard.style.display = user ? "" : "none";
+        if (user) loadRSVPs();
+      });
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          try {
+            await auth.signInWithEmailAndPassword(
+              document.getElementById("adminEmail").value,
+              document.getElementById("adminPass").value,
+            );
+          } catch {
+            alert("Login failed!");
+          }
+        });
+      function logout() {
+        auth.signOut();
+      }
+      // RSVP stats/table
+      let allRsvps = [];
+      function formatTS(ts) {
+        if (!ts) return "";
+        return typeof ts.toDate === "function"
+          ? ts.toDate().toLocaleString()
+          : new Date(ts).toLocaleString();
+      }
+      function loadRSVPs() {
+        db.collection("rsvps")
+          .orderBy("createdAt", "desc")
+          .onSnapshot((snapshot) => {
+            allRsvps = [];
+            snapshot.forEach((doc) =>
+              allRsvps.push({ id: doc.id, ...doc.data() }),
+            );
+            updateDashboard();
+          });
+      }
+      function updateDashboard() {
+        document.getElementById("statTotal").textContent = allRsvps.length;
+        let guestsAttending = 0,
+          maybeCount = 0,
+          notAttending = 0,
+          attendingCount = 0;
+        allRsvps.forEach((r) => {
+          let numGuests = 1,
+            g = String(r.guests ?? "").toLowerCase();
+          if (g.includes("two")) numGuests = 2;
+          else if (g.includes("three")) numGuests = 3;
+          else if (g.includes("four")) numGuests = 4;
+          else if (!isNaN(Number(g))) numGuests = Number(g);
+          let att = String(r.attendance || "")
+            .trim()
+            .toLowerCase();
+          if (att.includes("definitely") || att === "yes") {
+            guestsAttending += numGuests;
+            attendingCount++;
+          } else if (att.includes("can't") || att === "no") {
+            notAttending++;
+          } else if (att.includes("maybe") || att.includes("not sure")) {
+            maybeCount++;
+          }
+        });
+        document.getElementById("statGuests").textContent = guestsAttending;
+        document.getElementById("statMaybe").textContent = maybeCount;
+        document.getElementById("statNotAttending").textContent = notAttending;
+        document.getElementById("statAttending").textContent = attendingCount;
+        buildRsvpTable(allRsvps);
+      }
+      function buildRsvpTable(rsvps) {
+        const tbody = document.querySelector("#rsvpTable tbody");
+        tbody.innerHTML = "";
+        rsvps.forEach((r) => {
+          let att = String(r.attendance).toLowerCase();
+          tbody.innerHTML += `<tr>
+          <td>${formatTS(r.createdAt)}</td>
+          <td>${r.name || ""}</td>
+          <td>${r.guests || "1"}</td>
+          <td>${
+            att.includes("definitely") || att === "yes"
+              ? '<span class="tag tag-yes">Yes</span>'
+              : att.includes("can\'t") || att === "no"
+                ? '<span class="tag tag-no">No</span>'
+                : '<span class="tag tag-maybe">Maybe</span>'
+          }</td>
+          <td>${r.wish || ""}</td>
+        </tr>`;
+        });
+      }
+      document
+        .getElementById("rsvpSearch")
+        .addEventListener("input", function () {
+          const val = this.value.trim().toLowerCase();
+          buildRsvpTable(
+            !val
+              ? allRsvps
+              : allRsvps.filter((r) =>
+                  (r.name || "").toLowerCase().includes(val),
+                ),
+          );
+        });
+      document
+        .getElementById("refreshBtn")
+        .addEventListener("click", loadRSVPs);
+      document
+        .getElementById("exportPdf")
+        .addEventListener("click", () => window.print());
+
+      // Petals/Balloons/Hearts background, for fancy BG effect
+      (function petalsBg() {
+        const bg = document.querySelector(".bg");
+        if (!bg) return;
+        const layer = document.createElement("div");
+        layer.className = "petals-layer";
+        layer.setAttribute("aria-hidden", "true");
+        bg.insertAdjacentElement("afterend", layer);
+        const count = 46,
+          rand = (a, b) => Math.random() * (b - a) + a;
+        for (let i = 0; i < count; i++) {
+          const p = document.createElement("span");
+          p.className = "petal";
+          const w = rand(10, 22),
+            h = w * rand(1.2, 1.8),
+            x = rand(0, 100),
+            drift = rand(-14, 14),
+            sway = rand(8, 26),
+            d = rand(8, 15),
+            s = rand(2.8, 5.0),
+            delay = -rand(0, d),
+            o = rand(0.22, 0.6),
+            r = rand(-180, 180),
+            blur = rand(0, 1.2);
+          p.style.setProperty("--w", `${w}px`);
+          p.style.setProperty("--h", `${h}px`);
+          p.style.setProperty("--x", `${x}vw`);
+          p.style.setProperty("--drift", `${drift}vw`);
+          p.style.setProperty("--sway", `${sway}px`);
+          p.style.setProperty("--d", `${d}s`);
+          p.style.setProperty("--s", `${s}s`);
+          p.style.setProperty("--delay", `${delay}s`);
+          p.style.setProperty("--o", o.toFixed(2));
+          p.style.setProperty("--r", `${r}deg`);
+          p.style.setProperty("--b", `${blur}px`);
+          layer.appendChild(p);
+        }
+      })();
+      (function balloonsAndHeartsBg() {
+        const bg = document.querySelector(".bg");
+        if (!bg) return;
+        const layer = document.createElement("div");
+        layer.className = "fx-layer";
+        layer.setAttribute("aria-hidden", "true");
+        bg.insertAdjacentElement("afterend", layer);
+        const rand = (a, b) => Math.random() * (b - a) + a;
+        let balloonCount = 10,
+          heartCount = 18;
+        for (let i = 0; i < balloonCount; i++) {
+          const el = document.createElement("span");
+          el.className = "fx-balloon";
+          const w = rand(46, 90),
+            x = rand(-5, 105),
+            drift = rand(-10, 10),
+            sway = rand(14, 34),
+            d = rand(12, 22),
+            s = rand(3.5, 6.5),
+            delay = -rand(0, d),
+            o = rand(0.3, 0.55);
+          el.style.setProperty("--w", `${w}px`);
+          el.style.setProperty("--x", `${x}vw`);
+          el.style.setProperty("--drift", `${drift}vw`);
+          el.style.setProperty("--sway", `${sway}px`);
+          el.style.setProperty("--d", `${d}s`);
+          el.style.setProperty("--s", `${s}s`);
+          el.style.setProperty("--delay", `${delay}s`);
+          el.style.setProperty("--o", o.toFixed(2));
+          el.style.setProperty("--b", "0px");
+          layer.appendChild(el);
+        }
+        for (let i = 0; i < heartCount; i++) {
+          const el = document.createElement("span");
+          el.className = "fx-heart";
+          const w = rand(16, 34),
+            x = rand(-5, 105),
+            drift = rand(-14, 14),
+            sway = rand(10, 26),
+            d = rand(10, 18),
+            s = rand(3.0, 5.5),
+            delay = -rand(0, d),
+            o = rand(0.22, 0.45),
+            r = rand(-25, 25);
+          el.style.setProperty("--w", `${w}px`);
+          el.style.setProperty("--x", `${x}vw`);
+          el.style.setProperty("--drift", `${drift}vw`);
+          el.style.setProperty("--sway", `${sway}px`);
+          el.style.setProperty("--d", `${d}s`);
+          el.style.setProperty("--s", `${s}s`);
+          el.style.setProperty("--delay", `${delay}s`);
+          el.style.setProperty("--o", o.toFixed(2));
+          el.style.setProperty("--r", `${r}deg`);
+          el.style.setProperty("--b", "0px");
+          layer.appendChild(el);
+        }
+      })();
+    </script>
+  </body>
+</html>
