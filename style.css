@@ -1273,3 +1273,8 @@ section {
     font-size: 0.97em;
   }
 }
+@media (max-width: 600px) {
+  .party-card {
+    margin-top: 7vw !important;
+  }
+}
